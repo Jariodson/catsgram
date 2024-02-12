@@ -1,8 +1,12 @@
 package ru.yandex.practicum.catsgram.model;
 
+import lombok.Data;
+import lombok.Getter;
+
 import java.time.LocalDate;
 import java.util.Objects;
 
+@Data
 public class User {
     private String email;
     private String nickname;
@@ -21,15 +25,4 @@ public class User {
         return Objects.hash(email);
     }
 
-    public String getNickname() {
-        return nickname;
-    }
-
-    public LocalDate getBirthdate() {
-        return birthdate;
-    }
-
-    public String getEmail() {
-        return email;
-    }
 }
