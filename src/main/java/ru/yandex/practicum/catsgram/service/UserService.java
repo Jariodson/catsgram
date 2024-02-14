@@ -6,8 +6,10 @@ import ru.yandex.practicum.catsgram.exceiption.InvalidEmailException;
 import ru.yandex.practicum.catsgram.exceiption.UserAlreadyExistException;
 import ru.yandex.practicum.catsgram.model.User;
 
+import java.nio.file.OpenOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -53,12 +55,9 @@ public class UserService {
         return user;
     }
 
-    public User findUserByEmail(String email){
-        for (User user : users){
-            if (user.getEmail().equals(email)){
-                return user;
-            }
-        }
-        return null;
+    public Optional<User> findUserByEmail(String email){
+        return users.stream()
+                .filter(user -> user.getEmail().equals(email))
+                .findFirst();
     }
 }

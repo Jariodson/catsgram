@@ -1,14 +1,14 @@
 package ru.yandex.practicum.catsgram.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.catsgram.model.Post;
 import ru.yandex.practicum.catsgram.service.PostService;
 
-import java.util.List;
+import javax.validation.constraints.NotNull;
+import java.util.Collection;
+import java.util.Optional;
 
 @RestController
 public class PostController {
@@ -19,12 +19,25 @@ public class PostController {
         this.postService = postService;
     }
 
-    @GetMapping("/posts")
-    public List<Post> findAll() {
-        return postService.findAll();
+    @GetMapping(value = {"/posts"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Collection<Post> findAll(@RequestParam(value = "page", defaultValue = "0", required = false) Integer page,
+                                    @NotNull
+                                    @RequestParam(value = "size", defaultValue = "10", required = false) Integer size,
+                                    @RequestParam(value = "sort", defaultValue = "desc", required = false) String sort
+    ) {
+        int from = page * size;
+        return postService.findAll(size, sort, from);
     }
 
-    @PostMapping(value = "/post")
+    @GetMapping(value = {"/posts/{postId}"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Optional<Post> findById(@PathVariable(required = false) String postId) {
+        if (postId != null) {
+            return postService.findById(Integer.parseInt(postId));
+        }
+        return Optional.empty();
+    }
+
+    @PostMapping(value = "/posts", produces = MediaType.APPLICATION_JSON_VALUE)
     public Post create(@RequestBody Post post) {
         return postService.create(post);
     }
